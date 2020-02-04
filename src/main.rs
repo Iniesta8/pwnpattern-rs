@@ -1,3 +1,5 @@
+use std::env;
+
 const MAX_LEN: usize = 16_348;
 
 fn gen_pattern(len: usize) -> Option<String> {
@@ -31,7 +33,13 @@ fn find_pattern(pattern: String) -> Option<usize> {
     // reverse the search pattern.
     if pattern.starts_with("0x") {
         needle = pattern[2..].to_string();
-        let mut needle_vec = hex::decode(needle).unwrap();
+        let mut needle_vec = match hex::decode(needle) {
+            Ok(res) => res,
+            Err(_) => {
+                eprintln!("Decoding hexadecimal number failed");
+                return None;
+            }
+        };
         needle_vec = needle_vec.iter().copied().rev().collect();
         needle = String::from_utf8(needle_vec).unwrap();
     }
@@ -45,7 +53,6 @@ fn find_pattern(pattern: String) -> Option<usize> {
                 haystack.push(digit);
                 match haystack.find(&needle[..]) {
                     Some(idx) => {
-                        println!("Found at index {}", idx);
                         return Some(idx);
                     }
                     None => continue,
@@ -56,7 +63,29 @@ fn find_pattern(pattern: String) -> Option<usize> {
     None
 }
 
-fn main() {}
+fn main() {
+    let args: Vec<String> = env::args().collect();
+    if args.len() != 2 {
+        println!("Usage: ./pwnpattern-rs <length>|<search_pattern>");
+    }
+
+    let arg = &args[1];
+    if arg.chars().all(char::is_numeric) {
+        match gen_pattern(arg.parse::<usize>().unwrap()) {
+            Some(pattern) => println!("{}", pattern),
+            None => eprintln!("Generating pattern failed"),
+        }
+    } else {
+        match find_pattern(arg.to_string()) {
+            Some(pos) => println!(
+                "Pattern {} found at position {} (first occurrence)",
+                arg.to_string(),
+                pos
+            ),
+            None => println!("Pattern not found"),
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {
