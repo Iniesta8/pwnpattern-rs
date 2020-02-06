@@ -2,6 +2,10 @@ use std::env;
 
 const MAX_LEN: usize = 16_348;
 
+const UPPER: &str = "ABCDEFGHIJKLMNOPQRSTUVXYZ";
+const LOWER: &str = "abcdefghijklmnopqrstuvwxyz";
+const DIGITS: &str = "0123456789";
+
 fn gen_pattern(len: usize) -> Option<String> {
     if len > MAX_LEN {
         eprintln!("Given length not supported");
@@ -9,9 +13,9 @@ fn gen_pattern(len: usize) -> Option<String> {
     }
 
     let mut pattern = String::new();
-    for upper in "ABCDEFGHIJKLMNOPQRSTUVXYZ".chars() {
-        for lower in "abcdefghijklmnopqrstuvwxyz".chars() {
-            for digit in "0123456789".chars() {
+    for upper in UPPER.chars() {
+        for lower in LOWER.chars() {
+            for digit in DIGITS.chars() {
                 if pattern.len() < len {
                     pattern.push(upper);
                     pattern.push(lower);
@@ -45,9 +49,9 @@ fn find_pattern(pattern: String) -> Option<usize> {
     }
 
     let mut haystack = String::new();
-    for upper in "ABCDEFGHIJKLMNOPQRSTUVXYZ".chars() {
-        for lower in "abcdefghijklmnopqrstuvwxyz".chars() {
-            for digit in "0123456789".chars() {
+    for upper in UPPER.chars() {
+        for lower in LOWER.chars() {
+            for digit in DIGITS.chars() {
                 haystack.push(upper);
                 haystack.push(lower);
                 haystack.push(digit);
