@@ -37,10 +37,10 @@ fn find_pattern(pattern: String) -> Option<usize> {
     // reverse the search pattern.
     if pattern.starts_with("0x") {
         needle = pattern[2..].to_string();
-        let mut needle_vec = match hex::decode(needle) {
+        let mut needle_vec = match hex::decode(&needle) {
             Ok(res) => res,
-            Err(_) => {
-                eprintln!("Decoding hexadecimal number failed");
+            Err(e) => {
+                eprintln!("Decoding hexadecimal number '{}' failed: {}", &needle, e);
                 return None;
             }
         };
