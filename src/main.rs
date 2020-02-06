@@ -55,11 +55,8 @@ fn find_pattern(pattern: String) -> Option<usize> {
                 haystack.push(upper);
                 haystack.push(lower);
                 haystack.push(digit);
-                match haystack.find(&needle[..]) {
-                    Some(idx) => {
-                        return Some(idx);
-                    }
-                    None => continue,
+                if let Some(idx) = haystack.find(&needle[..]) {
+                    return Some(idx);
                 }
             }
         }
